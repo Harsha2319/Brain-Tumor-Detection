@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brain Tumor Detection Application</title>
+</head>
+<body>
+<h1>Brain Tumor Detection Application</h1>
+<ul>
+  <li> 5 Random images are displayed to explore the prediction model </li>
+  <li> Random images are generated each time the page is refreshed</li>
+  <li> Click on an image to make prediction</li>
+</ul>
+<h3> Sample Images</h3>
+
+<input type="image" src="{{ url_for('static', filename=pic1)}}" width="200" height="200" alt="Submit" />
+<input type="image" src="{{ url_for('static', filename=pic2)}}" width="200" height="200" alt="Submit" />
+<input type="image" src="{{ url_for('static', filename=pic3)}}" width="200" height="200" alt="Submit" />
+<input type="image" src="{{ url_for('static', filename=pic4)}}" width="200" height="200" alt="Submit" />
+<input type="image" src="{{ url_for('static', filename=pic5)}}" width="200" height="200" alt="Submit" />
+
+<form action="{{ url_for("handle_data")}}" method="post">
+    <select name='image'>
+      <option>Picture 1</option>
+      <option>Picture 2</option>
+      <option>Picture 3</option>
+      <option>Picture 4</option>
+      <option>Picture 5</option>
+    </select>
+    <input type="submit" value="click to predict" />
+</form>
+<h3> Prediction output</h3>
+<input type="image" src="{{ url_for('static', filename=img)}}" width="200" height="200" alt="Submit" />
+<input type="image" src="{{ url_for('static', filename=mask)}}" width="200" height="200" alt="Submit" />
+<input type="image" src="{{ url_for('static', filename=pred)}}" width="200" height="200" alt="Submit" />
+
+</body>
+</html>
