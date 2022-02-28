@@ -3,6 +3,7 @@ import os
 import cv2
 import random
 import numpy as np
+import pandas as pd
 from PIL import Image
 import matplotlib.pyplot as plt
 from flask import Flask, render_template, request
@@ -10,9 +11,6 @@ from flask import Flask, render_template, request
 import tensorflow as tf
 from tensorflow.keras import backend as K
 
-from utils import extract_datafile
-from utils import creating_dataframe
-from utils import split_dataset
 from metrics import dice_coef
 from metrics import dice_coef_loss
 from metrics import bce_dice_loss
@@ -26,7 +24,7 @@ def create_dir(path):
     os.mkdir(path)
 
 def convert_img_type(image_file_name, img_type):
-  image_file_name = image_file_name.replace('/content', '../data')
+  image_file_name = image_file_name.replace('input', 'data')
   img = Image.open(image_file_name)
   rgb_img = img.convert('RGB')
   target_filename = "../static/" + img_type + "/" + image_file_name.split('.')[0].split('/')[-1] +".jpg"
@@ -60,6 +58,7 @@ def predict(img,mask):
 def home():
     global display_images 
     display_images = generate_5_random_img()
+    print(display_images)
     return render_template('index.html', 
                            pic1=display_images[0],
                            pic2=display_images[1],
@@ -70,7 +69,9 @@ def home():
 
 @app.route('/handle_data', methods=['POST'])
 def handle_data():
+    print("in handle data")
     image = request.form['image']
+    print(image)
     image_link = {'Picture 1':0,
                   'Picture 2':1,
                   'Picture 3':2,
@@ -78,6 +79,8 @@ def handle_data():
                   'Picture 5':4}
     img = display_images[image_link[image]]           
     mask = "mask/" +img.split('.')[0].split('/')[1] + "_mask.jpg"
+    print(img)
+    print(mask)
     pred = predict(img,mask)
     return render_template('output.html', 
                            pic1=display_images[0],
@@ -89,15 +92,13 @@ def handle_data():
                            mask = mask,
                            pred=pred)
     
-dataset_path = "../data/Brain_MRI_Data.zip"
-dir_extracted = "../data/lgg-mri-segmentation/"
+
+test_data_path = "../data/test.csv"
 model_path = "../model/BrainTumorDetection.h5"
 SIZE = (256, 256)
-display_images = [],
+display_images = []
 
-extract_datafile(dataset_path, dir_extracted)
-df = creating_dataframe()
-df_train, df_val, df_test = split_dataset(df)
+df_test = pd.read_csv(test_data_path)
 
 create_dir("../static")
 create_dir("../static/MRI")
@@ -112,4 +113,3 @@ for filename in df_test['mask']:
 new_model = tf.keras.models.load_model(model_path, custom_objects={"bce_dice_loss": bce_dice_loss, "iou":iou, "dice_coef":dice_coef})
 
 app.run()
-
