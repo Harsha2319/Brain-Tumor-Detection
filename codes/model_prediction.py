@@ -60,7 +60,6 @@ def predict(img,mask):
 def home():
     global display_images 
     display_images = generate_5_random_img()
-    print(display_images)
     return render_template('index.html', 
                            pic1=display_images[0],
                            pic2=display_images[1],
@@ -71,9 +70,7 @@ def home():
 
 @app.route('/handle_data', methods=['POST'])
 def handle_data():
-    print("in handle data")
     image = request.form['image']
-    print(image)
     image_link = {'Picture 1':0,
                   'Picture 2':1,
                   'Picture 3':2,
@@ -81,8 +78,6 @@ def handle_data():
                   'Picture 5':4}
     img = display_images[image_link[image]]           
     mask = "mask/" +img.split('.')[0].split('/')[1] + "_mask.jpg"
-    print(img)
-    print(mask)
     pred = predict(img,mask)
     return render_template('output.html', 
                            pic1=display_images[0],
