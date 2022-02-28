@@ -92,12 +92,15 @@ def handle_data():
                            mask = mask,
                            pred=pred)
     
-
+dataset_path = "../data/Brain_MRI_Data.zip"
+dir_extracted = "../data/lgg-mri-segmentation/"
+extract_to = "../data/"
 test_data_path = "../data/test.csv"
 model_path = "../model/BrainTumorDetection.h5"
 SIZE = (256, 256)
 display_images = []
 
+extract_datafile(dataset_path, dir_extracted,extract_to)
 df_test = pd.read_csv(test_data_path)
 
 create_dir("../static")
